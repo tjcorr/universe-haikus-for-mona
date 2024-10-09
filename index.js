@@ -29,5 +29,19 @@ app.post('/heart', (req, res) => {
   });
 });
 
+app.get('/search', (req, res) => {
+  const q = "'%" + req.query.query + "%'";
+  pool.query(
+    `SELECT * FROM haikus WHERE haiku ILIKE ${q} ORDER BY id`,
+    [],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send('Error occurred during search' );
+      }
+      res.render('index', { haikus: result.rows });
+    }
+  );
+});
+
 app.listen(port);
 console.log(`Server running on http://localhost:${port}`)
